@@ -103,11 +103,121 @@
             <li>PAGOS AL INSTANTE</li>
             <li>TRANSACCIONES INMEDIATAS</li>
             <li>SOPORTE 24/7</li>
-            <li>¡LA VICTORIA ESTÁ A UN CLICK DE DISTANCIA!</li>
           </ul>
         </div>
       </section>
+
+      <section class="testimonials">
+        <div class="trustpilot-header">
+          <div class="trustpilot-rating">
+            <div class="stars">
+              <span class="star">★</span>
+              <span class="star">★</span>
+              <span class="star">★</span>
+              <span class="star">★</span>
+              <span class="star">★</span>
+            </div>
+            <span class="rating-text">Calificación <strong>4.9/5</strong> en</span>
+            <span
+              class="trustpilot-logo"
+              role="img"
+              aria-label="Trustpilot"
+            ></span>
+          </div>
+        </div>
+
+        <div class="carousel" id="testimonialCarousel">
+          <div class="carousel-viewport">
+            <div class="carousel-track" id="carouselTrack">
+              <article class="testimonial">
+                <div class="t-head">
+                  <div class="avatar">CM</div>
+                  <div class="t-meta">
+                    <span class="t-name">Carlos M.</span>
+                    <div class="t-stars">★★★★★</div>
+                  </div>
+                </div>
+                <p class="t-text">
+                  Cargué $5.000 y en 10 minutos ya tenía mi primer retiro.
+                  Atención top y pagos al toque. ¡Súper recomendado!
+                </p>
+              </article>
+
+              <article class="testimonial">
+                <div class="t-head">
+                  <div class="avatar">MG</div>
+                  <div class="t-meta">
+                    <span class="t-name">María G.</span>
+                    <div class="t-stars">★★★★★</div>
+                  </div>
+                </div>
+                <p class="t-text">
+                  No lo podía creer, mi retiro me llegó en menos de 5 minutos.
+                  Soporte 24/7 que de verdad responde. ¡Lo mejor!
+                </p>
+              </article>
+
+              <article class="testimonial">
+                <div class="t-head">
+                  <div class="avatar">JP</div>
+                  <div class="t-meta">
+                    <span class="t-name">Juan P.</span>
+                    <div class="t-stars">★★★★★</div>
+                  </div>
+                </div>
+                <p class="t-text">
+                  Probé varias plataformas y esta es la más rápida. Saqué
+                  $80.000 la semana pasada y todo perfecto.
+                </p>
+              </article>
+
+              <article class="testimonial">
+                <div class="t-head">
+                  <div class="avatar">LR</div>
+                  <div class="t-meta">
+                    <span class="t-name">Lucía R.</span>
+                    <div class="t-stars">★★★★★</div>
+                  </div>
+                </div>
+                <p class="t-text">
+                  Excelente servicio, los chicos del soporte te guían si sos
+                  nuevo. Ya hice 3 retiros sin problemas.
+                </p>
+              </article>
+
+              <article class="testimonial">
+                <div class="t-head">
+                  <div class="avatar">FD</div>
+                  <div class="t-meta">
+                    <span class="t-name">Federico D.</span>
+                    <div class="t-stars">★★★★★</div>
+                  </div>
+                </div>
+                <p class="t-text">
+                  La mejor plataforma que probé. Cobré $150.000 sin demoras y
+                  el soporte me atendió en menos de 1 minuto.
+                </p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
+
+    <div class="win-notification" id="winNotification">
+      <div class="win-icon">🎁</div>
+      <div class="win-body">
+        <div class="win-title">Premio PAGADO 💸</div>
+        <div class="win-text">
+          <strong id="winName">Carlos Pérez</strong> ganó
+          <strong class="win-amount" id="winAmount">$45.000</strong>
+        </div>
+        <div class="win-meta">
+          <span id="winCity">Buenos Aires</span> · hace
+          <span id="winTime">1 minuto</span>
+        </div>
+      </div>
+    </div>
 
     <script>
       // ── CONFIG (editar por cajero) ────────────────────────────
@@ -210,6 +320,76 @@
           return { code: '', number: FALLBACK_NUMBER, includeCode: false };
         }
       }
+
+      // ── Testimonials carousel (auto, sin controles) ─────────
+      (function () {
+        const track = document.getElementById('carouselTrack');
+        if (!track) return;
+        const total = track.querySelectorAll('.testimonial').length;
+        let idx = 0;
+        setInterval(() => {
+          idx = (idx + 1) % total;
+          track.style.transform = `translateX(-${idx * 100}%)`;
+        }, 4000);
+      })();
+
+      // ── Win notifications (popup cada 3s) ───────────────────
+      const winners = [
+        { name: 'Carlos Pérez', city: 'Buenos Aires', amount: 45000 },
+        { name: 'María Gómez', city: 'Córdoba', amount: 78500 },
+        { name: 'Juan Rodríguez', city: 'Rosario', amount: 32000 },
+        { name: 'Lucía Fernández', city: 'Mendoza', amount: 120000 },
+        { name: 'Diego Sosa', city: 'La Plata', amount: 56000 },
+        { name: 'Sofía Martínez', city: 'Mar del Plata', amount: 98000 },
+        { name: 'Martín López', city: 'Tucumán', amount: 41500 },
+        { name: 'Camila Ruiz', city: 'Salta', amount: 67000 },
+        { name: 'Federico Díaz', city: 'Neuquén', amount: 152000 },
+        { name: 'Valentina Torres', city: 'Santa Fe', amount: 38000 },
+        { name: 'Nicolás Acosta', city: 'San Juan', amount: 84000 },
+        { name: 'Agustina Romero', city: 'Bahía Blanca', amount: 73500 },
+        { name: 'Matías Suárez', city: 'Corrientes', amount: 51000 },
+        { name: 'Florencia Vega', city: 'Resistencia', amount: 60000 },
+        { name: 'Bruno Castro', city: 'Posadas', amount: 105000 },
+      ];
+
+      const winNotif = document.getElementById('winNotification');
+      const winNameEl = document.getElementById('winName');
+      const winAmountEl = document.getElementById('winAmount');
+      const winCityEl = document.getElementById('winCity');
+      const winTimeEl = document.getElementById('winTime');
+
+      const formatARS = (n) =>
+        '$' + n.toLocaleString('es-AR', { maximumFractionDigits: 0 });
+
+      const timeAgo = () => {
+        const opts = [
+          'unos segundos',
+          '1 minuto',
+          '2 minutos',
+          '3 minutos',
+          '5 minutos',
+          '8 minutos',
+          '12 minutos',
+        ];
+        return opts[Math.floor(Math.random() * opts.length)];
+      };
+
+      let winIdx = 0;
+      const shuffled = [...winners].sort(() => Math.random() - 0.5);
+
+      function showNextWin() {
+        const w = shuffled[winIdx % shuffled.length];
+        winIdx++;
+        winNameEl.textContent = w.name;
+        winAmountEl.textContent = formatARS(w.amount);
+        winCityEl.textContent = w.city;
+        winTimeEl.textContent = timeAgo();
+        winNotif.classList.add('show');
+        setTimeout(() => winNotif.classList.remove('show'), 2600);
+      }
+
+      setTimeout(showNextWin, 1500);
+      setInterval(showNextWin, 5000);
 
       const whatsappButton = document.getElementById('whatsappButton');
       const clientNameInput = document.getElementById('clientName');
