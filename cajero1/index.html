@@ -61,16 +61,6 @@
         </div>
 
         <div class="form-wrapper">
-          <div class="input-group">
-            <input
-              type="text"
-              id="clientName"
-              placeholder="Escribe tu nombre aquí..."
-              class="modern-input"
-              required
-            />
-          </div>
-
           <button class="cta-button" id="whatsappButton">
             <span>CONTACTARSE</span>
             <svg
@@ -272,17 +262,17 @@
 
       persistUtmContent((urlParams.get('utm_content') || '').trim());
 
-      const mensajesAleatorios = (nombre) => [
-        `¡Hola! Soy ${nombre}. Vi el anuncio y quiero crear un usuario.`,
-        `Hola, quiero empezar a jugar, soy ${nombre}. ¿Me pasan mi usuario?`,
-        `Hola, mi nombre es ${nombre}. Vengo por el anuncio para pedir mi cuenta.`,
-        `Hola, soy ${nombre}. ¡Díganme cómo cargar!`,
-        `Hola. Mi nombre es ${nombre}. Quiero un usuario para LemonBet.`,
-        `Hola, vi el anuncio y me interesa. Soy ${nombre}.`,
-        `Hola. Soy ${nombre}. Quiero mi usuario para empezar hoy.`,
-        `Hola. Vengo del anuncio. Soy ${nombre} y quiero empezar a jugar.`,
-        `Hola ¡Quiero mi usuario ahora! Soy ${nombre}.`,
-        `Hola, mi nombre es ${nombre}. ¿Me pueden dar información para comenzar?`,
+      const mensajesAleatorios = () => [
+        `¡Hola! Vi el anuncio y quiero crear un usuario.`,
+        `Hola, quiero empezar a jugar. ¿Me pasan mi usuario?`,
+        `Hola, vengo por el anuncio para pedir mi cuenta.`,
+        `Hola, ¡díganme cómo cargar!`,
+        `Hola. Quiero un usuario para LemonBet.`,
+        `Hola, vi el anuncio y me interesa.`,
+        `Hola. Quiero mi usuario para empezar hoy.`,
+        `Hola. Vengo del anuncio y quiero empezar a jugar.`,
+        `Hola, ¡quiero mi usuario ahora!`,
+        `Hola, ¿me pueden dar información para comenzar?`,
       ];
 
       async function guardarLeadsYObtenerCodigoYNumero(fbc, fbp, adCode) {
@@ -392,18 +382,9 @@
       setInterval(showNextWin, 5000);
 
       const whatsappButton = document.getElementById('whatsappButton');
-      const clientNameInput = document.getElementById('clientName');
 
-      if (whatsappButton && clientNameInput) {
+      if (whatsappButton) {
         whatsappButton.addEventListener('click', async function () {
-          const clientName = clientNameInput.value.trim();
-
-          if (!clientName) {
-            alert('Por favor, ingresa tu nombre antes de contactarte.');
-            clientNameInput.focus();
-            return;
-          }
-
           try {
             const fbp = obtenerCookie('_fbp') ?? null;
             const fbc = obtenerCookie('_fbc') ?? null;
@@ -412,7 +393,7 @@
             const { code, number, includeCode } =
               await guardarLeadsYObtenerCodigoYNumero(fbc, fbp, adCode);
 
-            const opciones = mensajesAleatorios(clientName);
+            const opciones = mensajesAleatorios();
             const mensajeBase =
               opciones[Math.floor(Math.random() * opciones.length)];
             const mensaje =
@@ -426,7 +407,7 @@
             );
           } catch {
             const mensajeSeguro =
-              'Buenas, vengo del anuncio y quiero informacion.';
+              'Hola, vengo del anuncio y quiero informacion.';
             window.open(
               `https://wa.me/${FALLBACK_NUMBER}?text=${encodeURIComponent(mensajeSeguro)}`,
               '_blank',
