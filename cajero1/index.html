@@ -212,7 +212,6 @@
     <script>
       // ── CONFIG (editar por cajero) ────────────────────────────
       const META_PIXEL_ID = '976916338006290';
-      const FALLBACK_NUMBER = '5493513576174';
       const API_URL = 'https://app.onlylemon.app/api/leads';
       // ─────────────────────────────────────────────────────────
 
@@ -276,36 +275,28 @@
       ];
 
       async function guardarLeadsYObtenerCodigoYNumero(fbc, fbp, adCode) {
-        try {
-          const url = adCode
-            ? `${API_URL}?utm_content=${encodeURIComponent(adCode)}`
-            : API_URL;
-          const payload = {
-            fbc,
-            fbp,
-            userAgent: navigator.userAgent,
-            metaPixelId: META_PIXEL_ID,
-          };
-          if (adCode) payload.adCode = adCode;
-          const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-          });
+        const url = adCode
+          ? `${API_URL}?utm_content=${encodeURIComponent(adCode)}`
+          : API_URL;
+        const payload = {
+          fbc,
+          fbp,
+          userAgent: navigator.userAgent,
+          metaPixelId: META_PIXEL_ID,
+        };
+        if (adCode) payload.adCode = adCode;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
 
-          if (response.status !== 201) {
-            return { code: '', number: FALLBACK_NUMBER, includeCode: false };
-          }
-
-          const data = await response.json();
-          return {
-            code: data.code,
-            number: data.number,
-            includeCode: true,
-          };
-        } catch {
-          return { code: '', number: FALLBACK_NUMBER, includeCode: false };
+        if (response.status !== 201) {
+          throw new Error(`Lead create failed: ${response.status}`);
         }
+
+        const data = await response.json();
+        return { code: data.code, number: data.number };
       }
 
       // ── Testimonials carousel (auto, sin controles) ─────────
@@ -387,27 +378,27 @@
             const fbc = obtenerCookie('_fbc') ?? null;
             const adCode = resolveUtmContent();
 
-            const { code, number, includeCode } =
-              await guardarLeadsYObtenerCodigoYNumero(fbc, fbp, adCode);
+            const { code, number } = await guardarLeadsYObtenerCodigoYNumero(
+              fbc,
+              fbp,
+              adCode,
+            );
 
             const opciones = mensajesAleatorios();
             const mensajeBase =
               opciones[Math.floor(Math.random() * opciones.length)];
-            const mensaje =
-              includeCode && code
-                ? `${mensajeBase} CODIGO:${code}`
-                : mensajeBase;
+            const mensaje = code
+              ? `${mensajeBase} CODIGO:${code}`
+              : mensajeBase;
 
             window.open(
               `https://wa.me/${number}?text=${encodeURIComponent(mensaje)}`,
               '_blank',
             );
-          } catch {
-            const mensajeSeguro =
-              'Hola, vengo del anuncio y quiero informacion.';
-            window.open(
-              `https://wa.me/${FALLBACK_NUMBER}?text=${encodeURIComponent(mensajeSeguro)}`,
-              '_blank',
+          } catch (err) {
+            console.error('Lead create failed', err);
+            alert(
+              'No pudimos conectarte en este momento. Por favor, intentá de nuevo en unos segundos.',
             );
           }
         });
