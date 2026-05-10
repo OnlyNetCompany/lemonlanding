@@ -299,11 +299,8 @@
 
           const data = await response.json();
           return {
-            code: typeof data?.code === 'string' ? data.code : '',
-            number:
-              typeof data?.number === 'string' && data.number
-                ? data.number
-                : FALLBACK_NUMBER,
+            code: data.code,
+            number: data.number,
             includeCode: true,
           };
         } catch {
