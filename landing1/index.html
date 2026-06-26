@@ -15,6 +15,9 @@
     <link rel="stylesheet" href="estilo.css" />
     <link rel="shortcut icon" href="./img/logo_sin_nombre.png" type="image/x-icon" />
 
+    <!-- Cloudflare Turnstile (captcha) -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
     <script>
       !(function (f, b, e, v, n, t, s) {
         if (f.fbq) return;
@@ -84,6 +87,9 @@
               </g>
             </svg>
           </button>
+
+          <!-- Cloudflare Turnstile — pega tu site key en data-sitekey -->
+          <div class="cf-turnstile" data-sitekey="0x4AAAAAAC6e8pjHQgaSjadR"></div>
         </div>
 
         <div class="features-info">
@@ -274,7 +280,12 @@
         `Hola, ¿me pueden dar información para comenzar?`,
       ];
 
-      async function guardarLeadsYObtenerCodigoYNumero(fbc, fbp, adCode) {
+      async function guardarLeadsYObtenerCodigoYNumero(
+        fbc,
+        fbp,
+        adCode,
+        turnstileToken,
+      ) {
         const url = adCode
           ? `${API_URL}?utm_content=${encodeURIComponent(adCode)}`
           : API_URL;
@@ -283,6 +294,7 @@
           fbp,
           userAgent: navigator.userAgent,
           metaPixelId: META_PIXEL_ID,
+          turnstileToken,
         };
         if (adCode) payload.adCode = adCode;
         const response = await fetch(url, {
@@ -374,6 +386,12 @@
       if (whatsappButton) {
         whatsappButton.addEventListener('click', async function () {
           try {
+            const captchaToken = window.turnstile?.getResponse();
+            if (!captchaToken) {
+              alert('Por favor, completá el captcha antes de continuar.');
+              return;
+            }
+
             const fbp = obtenerCookie('_fbp') ?? null;
             const fbc = obtenerCookie('_fbc') ?? null;
             const adCode = resolveUtmContent();
@@ -382,6 +400,7 @@
               fbc,
               fbp,
               adCode,
+              captchaToken,
             );
 
             const opciones = mensajesAleatorios();
@@ -395,8 +414,13 @@
               `https://wa.me/${number}?text=${encodeURIComponent(mensaje)}`,
               '_blank',
             );
+
+            // El token de Turnstile es de un solo uso: lo reseteamos para el próximo intento.
+            window.turnstile?.reset();
           } catch (err) {
             console.error('Lead create failed', err);
+            // Reseteamos el captcha para que el usuario reintente con un token nuevo.
+            window.turnstile?.reset();
             alert(
               'No pudimos conectarte en este momento. Por favor, intentá de nuevo en unos segundos.',
             );
