@@ -119,6 +119,11 @@ body::before {
   gap: 14px;
 }
 
+.cf-turnstile {
+  display: flex;
+  justify-content: center;
+}
+
 .input-group {
   width: 100%;
 }
